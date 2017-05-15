@@ -1,0 +1,24 @@
+@CHARSET "UTF-8";
+
+#list > a:LINK {
+		color: #333;
+		text-decoration: none;
+	}
+
+ #list > a:VISITED {
+		color: #333;
+		text-decoration: none;
+	}
+
+ #list > a:HOVER {
+		color: #111;
+		text-decoration: underline;
+	}
+	
+ #list > a:ACTIVE {
+		color: #FF0000;
+		text-decoration: underline;
+	}
+#list {
+	font-weight: bolder;
+}

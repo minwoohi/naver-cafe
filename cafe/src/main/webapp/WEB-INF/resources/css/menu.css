@@ -1,0 +1,63 @@
+@CHARSET "UTF-8";
+
+	body {
+		padding: 0;
+		margin: 0;
+	}
+
+	body, td, th, span, p, a, b, strong, div, input, textarea, select, button, form, label {
+		font-size: 12px !important;
+	}
+
+	* {
+		margin-bottom: 5px;
+	}
+	#menubar a:LINK {
+		color: #333;
+		text-decoration: none;
+	}
+
+	#menubar li > a:VISITED {
+		color: #333;
+		text-decoration: none;
+	}
+
+	#menubar li > a:HOVER {
+		color: #111;
+		text-decoration: underline;
+	}
+	
+	#menubar li > a:ACTIVE {
+		color: #FF0000;
+		text-decoration: underline;
+	}
+
+	body {
+		padding-left: 180px;
+	}
+	
+	#menubar > ul {
+		margin: 0;
+		padding: 10px;
+		position :fixed;
+		top: 0;
+		left : 0;
+		bottom : 0;
+		list-style: none;
+		border-right: 3px solid #EEE;
+	}
+	
+	#menubar ul {
+		list-style: none;
+	}
+	
+	#menubar ul > li {
+		padding-top : 3px;
+		padding-botton: 3px;
+	}
+	
+	#menubar li:HOVER{
+		background-color: #f7b722;
+		color:white;
+	}
+

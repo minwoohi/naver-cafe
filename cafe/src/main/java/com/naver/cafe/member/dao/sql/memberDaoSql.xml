@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+							"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace : 인터페이스명, id : 사용할 메소드명 -->
+
+<mapper namespace="MemberDao">
+
+
+	<select id="selectLockStatus"
+			parameterType="string"
+			resultType="_int">
+		SELECT	/* [MemberDao][selectLockStatus] */
+				COUNT(1) CNT
+		FROM	MBR
+		WHERE	MBR_ID = #{memberId}
+		AND		IS_LOCK = 'Y'
+		AND		LATEST_TRY_LOGIN_DATE + (1 / 24 / 60 ) * LOCK_COUNT > SYSDATE 
+	</select>
+	
+	
+	<update id="plusLoginFailCount"
+			parameterType="string">
+		UPDATE	MBR /* [MemberDao][plusLoginFailCount] */
+		SET		LOGIN_FAIL_COUNT = LOGIN_FAIL_COUNT + 1
+				, LATEST_TRY_LOGIN_DATE = SYSDATE 
+		WHERE	MBR_ID = #{memberId}
+	</update>
+	
+	<!--  -->
+	<update id="updateLockStatus"
+			parameterType="string">
+		UPDATE	MBR
+		SET		IS_LOCK = 'Y'
+				, LOCK_COUNT = LOCK_COUNT + 1
+		WHERE	MBR_ID = #{memberId}
+		AND		LOGIN_FAIL_COUNT > 3
+	</update>
+	
+	
+	<update id="updateClearLoginFailCount"
+			parameterType="string">
+		UPDATE	MBR
+		SET		LOGIN_FAIL_COUNT = 0
+				, IS_LOCK = 'N'
+		WHERE	MBR_ID = #{memberId}
+		AND		IS_LOCK = 'Y'
+	</update>
+	
+	
+	<update id="updateClearLockCount"
+			parameterType="string">
+		UPDATE	MBR
+		SET		LOCK_COUNT = 0
+		WHERE	MBR_ID = #{memberId}	
+	</update>
+			
+
+	<select id="selectOneMember"
+			parameterType="MemberVO"
+			resultType="MemberVO">
+		SELECT	/* [MemverVO][selectOneMember]*/
+				MBR_ID memberId
+				, NCK_NM nickName
+				, MBR_PWD memberPassword
+				, AUTH auth
+				, SALT salt
+		FROM	MBR
+		WHERE	MBR_ID = #{memberId}
+		AND		MBR_PWD = #{memberPassword}
+	</select>
+	
+	<select id="getSaltByMemberId"
+			parameterType="string"
+			resultType="string">
+		SELECT	SALT
+		FROM	MBR
+		WHERE	MBR_ID = #{memberId}		
+	</select>
+	
+	<select id="selectDuplicatedMemberId"
+			parameterType="string"
+			resultType="_int">
+		SELECT	COUNT(1) CNT /* [MemverVO][selectDuplicatedMemberId]*/
+		FROM	MBR
+		WHERE	MBR_ID = #{memberId}
+	</select>
+	
+	<insert id="insertOneMember"
+			parameterType="MemberVO">
+		INSERT	INTO MBR (	/* [MemverVO][insertOneMember]*/
+							MBR_ID
+							, NCK_NM
+							, MBR_PWD
+							, AUTH
+							, SALT
+						)	
+		VALUES			(
+							#{memberId}
+							, #{nickName}
+							, #{memberPassword}
+							, 'USR'
+							, #{salt}
+						)
+	</insert>
+	
+	<update id="updateOneMember"
+			parameterType="MemberVO">
+		UPDATE	MBR
+		SET		NCK_NM = #{nickName}
+				, MBR_PWD = #{memberPassword}
+		WHERE	MBR_ID = #{memberId}
+	</update>
+	
+	<delete id="deleteOneMember"
+			parameterType="string">
+		DELETE
+		FROM	MBR
+		WHERE	MBR_ID = #{memberId}
+	</delete>
+
+</mapper>

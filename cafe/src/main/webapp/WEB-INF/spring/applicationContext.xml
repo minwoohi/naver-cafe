@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
+	
+	<mvc:annotation-driven/>
+	
+	<!-- 
+		"http://localhost:8080/setting/static/js/파일명" 요청에 대해
+		"/WEB-INF/resources/js/파일명"으로 응답 주겠다.
+	 -->
+	
+	<mvc:resources mapping="/static/js/**" location="/WEB-INF/resources/js/" />
+	<mvc:resources mapping="/static/css/**" location="/WEB-INF/resources/css/" />
+	<mvc:resources mapping="/static/img/**" location="/WEB-INF/resources/img/" />
+	
+	<!-- interceptor 등록해놓아야 동작한다! 필터는 property 등록 불가능해 불편함 -->
+	<mvc:interceptors>
+		<bean id="authInterceptor" 
+				class="com.naver.cafe.common.interceptor.AuthInterceptor">
+			<property name="menuBiz" ref="menuBizImpl" />
+		</bean>
+	</mvc:interceptors>
+	
+	<bean id="validator"
+			class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+	
+	<bean id="viewResolver"
+			class="org.springframework.web.servlet.view.InternalResourceViewResolver" >
+		<property name="prefix" value="/WEB-INF/view/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="104857600" /> <!-- 100mb -->
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+
+	<bean id="clubController"
+			class="com.naver.cafe.club.web.ClubController">
+			<property name="clubService" ref="clubServiceImpl" />
+	</bean>
+
+	<bean id="memberController"
+			class="com.naver.cafe.member.web.MemberController">
+			<property name="memberService" ref="memberServiceImpl" />
+	</bean>
+	
+	<bean id="replyController"
+			class="com.naver.cafe.reply.web.ReplyController">
+			<property name="replyService" ref="replyServiceImpl" />
+	</bean>
+</beans>

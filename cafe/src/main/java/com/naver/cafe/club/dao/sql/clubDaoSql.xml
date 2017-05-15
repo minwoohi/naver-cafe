@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+							"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace : 인터페이스명, id : 사용할 메소드명 -->
+<!-- mapper 주석 : /**/ -->
+
+<mapper namespace="ClubDao">
+	
+	<!-- <select id="selectAllClubCount" parameterType="ClubSearchVO" resultType="_int" >
+		SELECT	COUNT(1)
+		FROM	CLB C
+				, MBR M
+				, MN
+		WHERE	C.MBR_ID = M.MBR_ID
+		AND		MN.AUTH = M.AUTH
+		AND		MN.MN_ID = C.MN_ID
+		AND		MN.MN_ID = #{menuId}
+		/* ''인경우도 수행결과는 같다. 하지만 LIKE 수행속도 느리기 때문에 공백인 경우에도 수행하지 않도록 해주도록 함 */
+		<if test="searchType == 1">
+			<if test="searchKeyword != null and searchKeyword != ''">
+		AND		C.SBJ LIKE '%' || #{searchKeyword} || '%'
+			</if>
+		</if>
+		<if test="searchType == 2">
+			<if test="searchKeyword != null and searchKeyword != ''">
+		AND		M.NCK_NM LIKE '%' || #{searchKeyword} || '%'
+			</if>
+		</if>
+		<if test="searchType == 3">
+			<if test="searchKeyword != null and searchKeyword != ''">
+		AND		(
+					C.SBJ LIKE '%' || #{searchKeyword} || '%'
+		OR			M.NCK_NM LIKE '%' || #{searchKeyword} || '%'
+				)
+			</if>
+		</if>
+	</select> -->
+
+ <select id="selectAllClubCount" parameterType="ClubSearchVO" resultType="_int" >
+		SELECT	COUNT(1)
+		FROM	CLB C
+				, MBR M
+				, MN
+		WHERE	C.MBR_ID = M.MBR_ID
+		/*AND		MN.AUTH = M.AUTH*/
+		AND		MN.MN_ID = C.MN_ID
+		AND		MN.MN_ID = #{menuId}
+		/* ''인경우도 수행결과는 같다. 하지만 LIKE 수행속도 느리기 때문에 공백인 경우에도 수행하지 않도록 해주도록 함 */
+		<if test="searchType == 1">
+			<if test="searchKeyword != null and searchKeyword != ''">
+		AND		C.SBJ LIKE '%' || #{searchKeyword} || '%'
+			</if>
+		</if>
+		<if test="searchType == 2">
+			<if test="searchKeyword != null and searchKeyword != ''">
+		AND		M.NCK_NM LIKE '%' || #{searchKeyword} || '%'
+			</if>
+		</if>
+		<if test="searchType == 3">
+			<if test="searchKeyword != null and searchKeyword != ''">
+		AND		(
+					C.SBJ LIKE '%' || #{searchKeyword} || '%'
+		OR			M.NCK_NM LIKE '%' || #{searchKeyword} || '%'
+				)
+			</if>
+		</if>
+	</select> 
+	
+
+	<resultMap type="ClubVO" id="clubMap">
+		<id column="AR_ID" property="articleId"/>
+		<result column="SBJ" property="subject"/>
+		<result column="CONT" property="content"/>
+		<result column="MBR_ID" property="memberId"/>
+		<result column="CRT_DT" property="createdDate"/>
+		<result column="MDFY_DT" property="modifiedDate"/>
+		<result column="RD_CNT" property="readCount"/>
+		<result column="MN_ID" property="menuId"/>
+		
+		<association property="memberVO" javaType="MemberVO">
+			<id column="MBR_ID" property="memberId"/>
+			<result column="NCK_NM" property="nickName"/>
+			<result column="AUTH" property="auth"/>
+		</association>
+		
+		<association property="menuVO" javaType="MenuVO">
+			<id column="MN_ID" property="menuId"/>
+			<result column="MN_NM" property="menuName"/>
+			<result column="PRNT_MN_ID" property="parentMenuId"/>
+			<result column="AUTH" property="auth"/>
+		</association>
+		<association select="ReplyDao.selectRepliesCount"
+					property="repliesCount"
+					column="AR_ID"
+					javaType="_int"/>
+	</resultMap>
+
+	 <select id="selectAllClub" parameterType="ClubSearchVO" resultMap="clubMap" >
+		<include refid="CommonDao.PAGING_HEADER" />
+		SELECT	C.AR_ID
+				, C.SBJ
+				, C.CONT
+				, C.MBR_ID C_MBR_ID
+				, C.CRT_DT
+				, C.MDFY_DT
+				, C.RD_CNT
+				, C.MN_ID C_MN_ID
+				, M.MBR_ID
+				, M.NCK_NM
+				, M.AUTH
+				, MN.MN_ID
+				, MN.MN_NM
+				, MN.PRNT_MN_ID
+				, MN.AUTH MN_AUTH
+		FROM	CLB C
+				, MBR M
+				, MN
+		WHERE	C.MBR_ID = M.MBR_ID
+		/*AND		MN.AUTH = M.AUTH*/
+		AND		MN.MN_ID = C.MN_ID
+		AND		MN.MN_ID = #{menuId}
+		
+		<if test="searchType == 1">
+			<if test="searchKeyword != null and searchKeyword != ''">
+		AND		C.SBJ LIKE '%' || #{searchKeyword} || '%'
+			</if>
+		</if>
+		<if test="searchType == 2">
+			<if test="searchKeyword != null and searchKeyword != ''">
+		AND		M.NCK_NM LIKE '%' || #{searchKeyword} || '%'
+			</if>
+		</if>
+		<if test="searchType == 3">
+			<if test="searchKeyword != null and searchKeyword != ''">
+		AND		(
+					C.SBJ LIKE '%' || #{searchKeyword} || '%'
+		OR			M.NCK_NM LIKE '%' || #{searchKeyword} || '%'
+				)
+			</if>
+		</if>
+		ORDER	BY MDFY_DT	DESC
+		<include refid="CommonDao.PAGING_FOOTER" />
+	</select>
+	
+	<update id="updateReadCount"
+			parameterType="ClubSearchVO">
+		UPDATE	CLB
+		SET		RD_CNT = RD_CNT + 1
+		WHERE	AR_ID = #{articleId}
+	</update>
+	
+	<select id="selectOneClub"
+			parameterType="ClubSearchVO"
+			resultMap="clubMap">
+		SELECT	C.AR_ID
+				, C.SBJ
+				, C.CONT
+				, C.MBR_ID C_MBR_ID
+				, C.CRT_DT
+				, C.MDFY_DT
+				, C.RD_CNT
+				, C.MN_ID C_MN_ID
+				, M.MBR_ID
+				, M.NCK_NM
+				, M.AUTH
+				, MN.MN_ID
+				, MN.MN_NM
+				, MN.PRNT_MN_ID
+				, MN.AUTH MN_AUTH
+		FROM	CLB C
+				, MBR M
+				, MN
+		WHERE	C.MBR_ID = M.MBR_ID	
+		AND		MN.MN_ID = #{menuId}
+		AND		C.AR_ID = #{articleId}
+		 
+		
+	</select>
+	
+	<insert id="insertNewClub" parameterType="ClubVO">
+		INSERT INTO CLB (
+							AR_ID
+							, SBJ
+							, CONT
+							, MBR_ID
+							, CRT_DT
+							, MDFY_DT
+							, RD_CNT
+							, MN_ID
+						)
+		VALUES			(
+							'AR-' || TO_CHAR(SYSDATE, 'YYYYMMDDHH24') || '-' || LPAD( AR_ID_SEQ.NEXTVAL, 6, '0' )
+							, #{subject}
+							, #{content}
+							, #{memberId}
+							, SYSDATE
+							, SYSDATE
+							, 0
+							, #{menuId}
+						)
+	</insert>
+	
+	<update id="updateOneClub"
+			parameterType="ClubVO">
+		UPDATE	CLB
+		SET		SBJ = #{subject}
+       			, CONT = #{content}
+       			, MDFY_DT = SYSDATE
+		WHERE  	AR_ID   = #{articleId}
+	</update>
+			
+	<delete id="deleteOneClub"
+			parameterType="string">
+		DELETE
+		FROM	CLB
+		WHERE	AR_ID = #{articleId}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+							"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace : 인터페이스명, id : 사용할 메소드명 -->
+
+<mapper namespace="CommonDao">
+	
+	<sql id="PAGING_HEADER">
+		SELECT	*
+		FROM	(
+					SELECT	ROWNUM RNUM
+							, RST.*
+					FROM	(	
+	</sql>
+	<sql id="PAGING_FOOTER">
+							) RST
+					WHERE	ROWNUM <![CDATA[ <= ]]> #{endArticleNumber}
+				)
+		WHERE	RNUM >= #{startArticleNumber} 
+	</sql>
+
+</mapper>

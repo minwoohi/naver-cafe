@@ -1,0 +1,44 @@
+@CHARSET "UTF-8";
+/* 스타일 공통 설정 */
+/* form#searchForm a{
+	padding: 3px;
+	background-color: #EEE;
+	border: 1px solid #AAA;
+	밑줄 없애기
+	text-decoration: none;
+	color: #333;
+	size: 12px;
+	margin-right: 3px;
+} */
+
+form:form > input {
+	margin: 3px;
+}
+/* #listA {
+	text-decoration: none;
+	} */
+	
+form#searchForm a.page{
+	background-color: #fff;
+	border: 1px solid #fff;
+}
+
+form#searchForm a > b {
+	color: #F00;
+}
+
+/*
+form#searchForm a:LINK, form#searchForm a:VISITED {
+	
+} */
+
+/*
+form#searchForm a:ACTIVE {
+	
+} */
+
+
+form#searchForm a:HOVER {
+	color:#F00;
+	text-decoration: underline;
+} 
