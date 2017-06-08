@@ -13,13 +13,11 @@
 	$().ready(function(){
 		
 		$("#searchBtn").click(function(){
-			alert(".searchForm");
 			$(".searchForm").attr({
 				"method" : "get",
 				"action" : "<c:url value="/club/${menuId}" />"
 			});
 			$(".searchForm").submit();
-			alert(".searchForm end");
 		});
 		
 		<c:if test="${sessionScope._MEMBER_.auth == 'ADM'}" >
