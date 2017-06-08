@@ -113,28 +113,20 @@ public class MemberController {
 		String code = request.getParameter("code");
 		
 		OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
-		System.out.println("1");
 		AccessGrant accessGrant = oauthOperations.exchangeForAccess(code , googleOAuth2Parameters.getRedirectUri(),
 				null);
-		System.out.println("2");
 		String accessToken = accessGrant.getAccessToken();
-		System.out.println("3");
 		Long expireTime = accessGrant.getExpireTime();
-		System.out.println("4");
 		if (expireTime != null && expireTime < System.currentTimeMillis()) {
 			accessToken = accessGrant.getRefreshToken();
 			System.out.printf("accessToken is expired. refresh token = {}", accessToken);
 		}
-		System.out.println("5");
 		Connection<Google> connection = googleConnectionFactory.createConnection(accessGrant);
-		System.out.println("6");
 		Google google = connection == null ? new GoogleTemplate(accessToken) : connection.getApi();
-		System.out.println("7");
 		PlusOperations plusOperations = google.plusOperations();
-		System.out.println("8");
 		Person person = plusOperations.getGoogleProfile();
-		System.out.println("9");
-		System.out.println(person.getAccountEmail());
+
+		/*System.out.println(person.getAccountEmail());
 		System.out.println(person.getAboutMe());
 		System.out.println(person.getDisplayName());
 		System.out.println(person.getEtag());
@@ -142,7 +134,7 @@ public class MemberController {
 		System.out.println(person.getGender());
 		System.out.println(person.getGivenName());
 		System.out.println(person.getId());
-		System.out.println(person.getImageUrl());
+		System.out.println(person.getImageUrl());*/
 		
 		return "redirect:/";
 	}

@@ -13,11 +13,11 @@
 	$().ready(function(){
 		
 		$("#searchBtn").click(function(){
-			$(".searchForm").attr({
+			$("#searchForm").attr({
 				"method" : "get",
 				"action" : "<c:url value="/club/${menuId}" />"
 			});
-			$(".searchForm").submit();
+			$("#searchForm").submit();
 		});
 		
 		<c:if test="${sessionScope._MEMBER_.auth == 'ADM'}" >
@@ -113,7 +113,7 @@
 			</c:forEach>
 		</table>
 		<c:if test="${not empty clubList }">
-		<form class="searchForm">
+		<form id="searchForm">
 				${pager }
 				<select name="searchType">
 					<option value="1">제목</option>
@@ -134,7 +134,7 @@
 		</form>
 		</c:if>
 		<c:if test="${empty clubList }">
-			<form class="searchForm">
+			<form id="searchForm">
 				<c:if test="${not empty sessionScope._MEMBER_ }">
 				<a href="<c:url value="/club/write/${menuId }"/>" style="text-decoration: none;" class="w3-bar-item w3-button">글쓰기</a>
 				</c:if>

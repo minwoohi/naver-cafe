@@ -82,7 +82,6 @@ public class ClubController {
 		clubSearchVO.setSearchType(request.getParameter("searchType"));
 		clubSearchVO.setMenuId(menuId);
 		
-		System.out.println("searchKeyword : " + request.getParameter("searchKeyword"));
 		ClubListVO clubListVO = clubService.getAllClub(clubSearchVO);
 		session.setAttribute("_SEARCH_", clubSearchVO);
 
@@ -103,7 +102,6 @@ public class ClubController {
 		view.addObject("pager", pager);
 		view.setViewName("club/list");
 		view.addObject("menuId", menuId);
-		System.out.println("검색");
 
 		return view;
 	}
