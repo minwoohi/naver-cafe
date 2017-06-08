@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean id="googleConnectionFactory" class="org.springframework.social.google.connect.GoogleConnectionFactory">
+		<constructor-arg value="724513251495-v5puuk76dk0sur0u2fa8boab6b1t1u4g.apps.googleusercontent.com" />
+		<constructor-arg value="DERtkCRwGzOBbxH7jO8LnDOg" />
+	</bean> 
+	
+	<bean id="googleOAuth2Parameters" class="org.springframework.social.oauth2.OAuth2Parameters">
+		<property name="scope" value="https://www.googleapis.com/auth/plus.login"/> <!-- <property name="scope" value="https://www.googleapis.com/auth/plus.me"/> -->
+		<property name="redirectUri" value="http://localhost:8080/cafe/member/googleSignInCallback"/> 
+	</bean>
+
+</beans>

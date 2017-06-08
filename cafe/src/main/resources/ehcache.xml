@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+		updateCheck="false">
+		
+	<diskStore path="java.io.tmpdir" />
+	<!-- ehCache 환경 설정 같은 대역에 있는 서버들끼리 통신해 복제하도록 함. -->
+	<!-- 피어 발견 관련 설정 -->
+	<!-- 
+		cacheManagerPeerProviderFactory
+			properties 
+				peerDiscovery : automatic으로 지정하면 멀티캐스트 방식을 사용한다.
+				multicaseGroupAddress : 멀티캐스트 IP
+				multicaseGroupPort : 멀티캐스트 Port 번호
+	 -->
+	<cacheManagerPeerProviderFactory 
+	
+			class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+			properties="peerDiscovery=automatic, multicastGroupAddress=230.0.0.100, multicastGroupPort=8989" />
+	
+	<!-- 메시지 수신 관련 설정 -->
+	<!-- 
+		cacheManagerPeerListenerFactory
+			properties
+				port : 메시지를 수신할 때 사용되는 포트
+				socketTimeoutMillis : 이 노드에 메시지를 보냈을 때 메시지 전송시간을 기다리는 시간
+									    기본값은 2000ms
+	 -->
+	<cacheManagerPeerListenerFactory
+			class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"
+			properties="port=18989, socketTimeoutMillis=120000" />
+	
+	<!-- 
+		cache
+			name : 캐시의 이름
+			maxElementsInMemory : 메모리에 저장할 수 있는 객체의 최대 수
+			eternal : 이 값이 true 면 timeout 설정은 무시되고, Element 가 캐시에서 삭제되지 않는다.
+			timeToIdleSeconds : 지정한 시간동안 Element 가 사용(조회)되지 않으면 캐시에서 제거된다. 
+								이 값이 0 이면 만료시간을 지정하지 않는다. 
+								기본값은 0
+			timeToLiveSeconds : Element 가 존재하는 시간. 이 시간이 지나면 캐시에서 제거된다. 
+								이 값이 0 이면 만료시간을 지정하지 않는다. 
+								기본값은 0
+			overflowToDisk :	메모리에 저장된 객체의 수가 maxElementsInMemory에서 지정한 값에 다다랐을 때, 
+							 	디스크에 추가로 쓸것인지 지정한다.
+			diskPersistent : 	VM이 재가동할 때 디스크 저장소에 캐싱된 객체를 저장할지의 여부를 지정한다.
+							 	기본값은 false
+			diskExpiryThreadIntervalSeconds
+							: Disk Expiry 쓰레드의 수행 시간 간격을 초 단위로 지정한다. 
+							   기본값은 120
+			memoryStoreEvictionPolicy
+							: 객체의 개수가 maxElementsInMemory에 도달했을 때, 메모리에서 객체를 어떻게 제거할 것인지에
+							   대한 정책을 지정한다. 
+							   기본값은 LRU
+							  FIFO와 LFU지정할 수 있다. 
+							  LRU (Least Recently Used) : 가장 오랫동안 사용되지 않은 객체가 먼저 제거됨
+							  FIFO (First In First Out) : 가장 먼저 삽입된 객체가 가장 먼저 제거됨.
+							  LFU (Least Frequently Used) : 사용 빈도가 가장 적은 객체가 먼저 제거됨
+							  
+	 -->
+	<cache 
+			name="storedEmp" 
+			maxElementsInMemory="10000" 
+			eternal="false"
+			timeToIdleSeconds="0" 
+			timeToLiveSeconds="600" 
+			overflowToDisk="false"
+			diskPersistent="false" 
+			diskExpiryThreadIntervalSeconds="120"
+			memoryStoreEvictionPolicy="LRU">
+			
+			<!-- 캐시 값 복제 설정
+				cacheEventListenerFactory
+					properties
+						replicatePuts : 캐시에 새로운 요소가 추가되었을 때 다른 노드에 복사할 지에 대한 여부
+						replicateUpdates : 캐시의 요소 값이 변경되었을 때 다른 노드에 복사할 지에 대한 여부
+						replicateRemovals : 캐시의 요소 값이 삭제되었을 때 다른 노드에 반영할 지에 대한 여부
+						replicateAsynchronously : 비동기로 값을 복사할지에 대한 여부
+						replicateUpdatesViaCopy : 새로운 요소를 다른 노드에 복사할 지 아니면 삭제 메시지를 보낼 것인지 여부
+						asynchronousReplicationIntervalMillis : 비동기 방식을 사용할 때 변경 내역을 다른 노드에 통지하는 주기
+																기본값은 1000ms
+			 -->
+			<cacheEventListenerFactory 
+					class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" 
+					properties="replicatePuts=true,
+								replicateUpdates=true,
+								replicateRemovals=true,
+								replicateAsynchronously=true,
+								replicateUpdatesViaCopy=true" />
+			
+			<!-- Application(이벤트) 구동시 캐시 데이터 로딩(복제)하기 다른 서버로부터
+				bootstrapCacheLoaderFactory
+					properties
+						bootstrapAsynchronously : 비동기적으로 수행할지의 여부를 지정
+						maximumChunkSizeBytes : 클러스터의 다른 노드로부터 로딩 가능한 데이터의 최대 크기
+			 -->
+			<bootstrapCacheLoaderFactory 
+					class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"
+					properties="bootstrapAsynchronously=true,
+								maximumChunkSizeBytes=50000"/>
+	</cache>
+	
+</ehcache>

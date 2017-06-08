@@ -27,6 +27,8 @@ body {font-family: "Open Sans"}
 
 	$().ready(function(){
 		
+		var isDuplicated = false;
+		
 		$("#signUpBtn").click(function(){
 			var memberId = $("#memberId").val();
 			var memberPassword = $("#password").val();
@@ -46,7 +48,10 @@ body {font-family: "Open Sans"}
 			} else if ( !nickName ){
 				alert("nickName을 입력하세요");
 				return;
-			} else if ( isValidNumber == 'X' || isValidCharacter == 'X' 
+			} else if( isDuplicated ) {
+				alert("중복되는 아이디입니다. 다른 아이디를 입력해주세요!");
+				return;				
+			}else if ( isValidNumber == 'X' || isValidCharacter == 'X' 
 						|| isValidSpecialCharacter == 'X' || isOverEight == 'X'){
 				alert("Password는 영대소문자, 숫자, 특수문자를 포함한 8자 이상이어야 합니다.");
 				return;
@@ -59,7 +64,6 @@ body {font-family: "Open Sans"}
 			$("#signUpForm").submit(); */
 			
 			$.post("<c:url value="/member/signUp" />", $("#signUpForm").serialize(), function(response) {
-				alert("signIn 요청");
 				// 세션 정보 있는 response 를 받은 후 부모창 새로고침
 				opener.location.reload();
 				window.close();
@@ -76,8 +80,10 @@ body {font-family: "Open Sans"}
 						
 						if(data.isDuplicated){
 							$("#idDuplicated").text("중복되는 아이디입니다. 다른 아이디를 입력해주세요");
+							isDuplicated = true;
 						} else {
 							$("#idDuplicated").text("사용할 수 있는 아이디입니다!");
+							isDuplicated = false;
 						}
 						
 					});
@@ -94,24 +100,29 @@ body {font-family: "Open Sans"}
 					$("#isValidNumber").css("background-color", "#2cff19");
 				} else {
 					$("#isValidNumber").val("X");
+					$("#isValidNumber").css("background-color", "#f7162c");
 				}
 				if(data.isValidCharacter){
 					$("#isValidCharacter").val("v");
 					$("#isValidCharacter").css("background-color", "#2cff19");
 				} else {
 					$("#isValidCharacter").val("X");
+					$("#isValidCharacter").css("background-color", "#f7162c");
+				
 				}
 				if(data.isValidSpecialCharacter){
 					$("#isValidSpecialCharacter").val("v");
 					$("#isValidSpecialCharacter").css("background-color", "#2cff19");
 				} else {
 					$("#isValidSpecialCharacter").val("X");
+					$("#isValidSpecialCharacter").css("background-color", "#f7162c");
 				}
 				if(data.isOverEight){
 					$("#isOverEight").val("v");
 					$("#isOverEight").css("background-color", "#2cff19");
 				} else {
 					$("#isOverEight").val("X");
+					$("#isOverEight").css("background-color", "#f7162c");
 				}
 				
 			});

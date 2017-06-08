@@ -47,7 +47,6 @@ public class ClubServiceImpl implements ClubService{
 		// 현재 메뉴 아이디 계층화해 가져오기 위한 과정
 		menuSearchVO.setMenuId(clubSearchVO.getMenuId());
 		clubListVO.setCurrentMenu( menuBiz.getAllMenu(menuSearchVO) );
-		logger.info("getAllClubService");
 		
 		return clubListVO;
 	}

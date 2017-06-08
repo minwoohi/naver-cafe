@@ -1,6 +1,6 @@
 package com.naver.cafe.member.service;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 
 import com.naver.cafe.member.vo.MemberVO;
 
@@ -13,7 +13,9 @@ public interface MemberService {
 	
 	public boolean addOneMember(MemberVO member);
 	
-	public boolean login(HttpSession session, MemberVO member);
+	//public boolean login(HttpSession session, MemberVO member);
+	
+	public boolean login( MemberVO member);
 	
 	public boolean modifyOneMember(MemberVO member);
 	

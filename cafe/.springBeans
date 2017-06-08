@@ -11,6 +11,7 @@
 		<config>src/main/webapp/WEB-INF/spring/clubContext.xml</config>
 		<config>src/main/webapp/WEB-INF/spring/replyContext.xml</config>
 		<config>src/main/webapp/WEB-INF/spring/memberContext.xml</config>
+		<config>src/main/webapp/WEB-INF/spring/googleLoginContext.xml</config>
 	</configs>
 	<autoconfigs>
 		<config>src/main/webapp/WEB-INF/spring/applicationContext.xml</config>

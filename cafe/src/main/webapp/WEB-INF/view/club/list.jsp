@@ -5,14 +5,22 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>중고나라 따라잡기</title>
+<title>게시판</title>
 <jsp:include page="/WEB-INF/resources/template/common_header.jsp" />
 <script type="text/javascript" src="<c:url value="/static/js/jquery-3.1.1.min.js" />"></script>
 <script type="text/javascript">
 
 	$().ready(function(){
-
 		
+		$("#searchBtn").click(function(){
+			alert(".searchForm");
+			$(".searchForm").attr({
+				"method" : "get",
+				"action" : "<c:url value="/club/${menuId}" />"
+			});
+			$(".searchForm").submit();
+			alert(".searchForm end");
+		});
 		
 		<c:if test="${sessionScope._MEMBER_.auth == 'ADM'}" >
 		$("#deleteCheckedArticles").click(function(){
@@ -41,9 +49,7 @@
 		});
 		
 		</c:if>
-		
 	});
-
 </script>
 </head>
 <body>
@@ -109,15 +115,15 @@
 			</c:forEach>
 		</table>
 		<c:if test="${not empty clubList }">
-		<form id="searchForm">
+		<form class="searchForm">
 				${pager }
 				<select name="searchType">
 					<option value="1">제목</option>
 					<option value="2">작성자</option>
 					<option value="3">제목 + 작성자</option>
 				</select>
-				<input type="text" name="searchKeyword" value="${sessionScope._SEARCH_.searchKeyword }"/>
-				<input type="button" class="w3-button w3-white w3-hide-small" value="Search" onclick="movePage(0)" />
+				<input type="text" name="searchKeyword" value="${sessionScope._SEARCH_.searchKeyword }"  />
+				<input type="button" class="w3-button w3-white w3-hide-small" value="Search" id="searchBtn" />
 				<input type="button" value="검색 초기화" class="w3-button w3-white w3-hide-small" onclick="location.href='<c:url value="/club/${menuId}/init"/>';" />
 				<c:if test="${not empty sessionScope._MEMBER_ }">
 				<a href="<c:url value="/club/write/${menuId }"/>" style="text-decoration: none;" class="w3-bar-item w3-button">글쓰기</a>
@@ -130,7 +136,7 @@
 		</form>
 		</c:if>
 		<c:if test="${empty clubList }">
-			<form id="searchForm">
+			<form class="searchForm">
 				<c:if test="${not empty sessionScope._MEMBER_ }">
 				<a href="<c:url value="/club/write/${menuId }"/>" style="text-decoration: none;" class="w3-bar-item w3-button">글쓰기</a>
 				</c:if>
@@ -139,7 +145,7 @@
 		
 	</div>
 	
-	<div style="display:none;">
+<%-- 	 <div style="display:none;">
 		<c:import url="http://localhost:3000"/>
 	</div>
 	
@@ -150,7 +156,7 @@
 		$("#hiddenBtn").click();
 		
 	});
-</script>
+</script> --%>
 	
 </body>
 </html>

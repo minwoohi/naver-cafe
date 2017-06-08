@@ -29,6 +29,7 @@ import com.naver.cafe.club.vo.ClubSearchVO;
 import com.naver.cafe.club.vo.ClubVO;
 import com.naver.cafe.common.Auth;
 import com.naver.cafe.common.DownloadUtil;
+import com.naver.cafe.common.SessionUtil;
 import com.naver.cafe.common.web.ListPageExplorer;
 import com.naver.cafe.common.web.PageExplorer;
 import com.naver.cafe.member.vo.MemberVO;
@@ -42,12 +43,10 @@ public class ClubController {
 
 	private Logger logger = LoggerFactory.getLogger(ClubController.class);
 	private ClubService clubService;
-	
 
 	public void setClubService(ClubService clubService) {
 		this.clubService = clubService;
 	}
-	
 
 	// 검색 조건(Page 정보) 사라진 처음 페이지 보여주고 싶은 경우
 	@Auth("USR")
@@ -79,8 +78,11 @@ public class ClubController {
 			}
 		}
 		
+		clubSearchVO.setSearchKeyword(request.getParameter("searchKeyword"));
 		clubSearchVO.setSearchType(request.getParameter("searchType"));
 		clubSearchVO.setMenuId(menuId);
+		
+		System.out.println("searchKeyword : " + request.getParameter("searchKeyword"));
 		ClubListVO clubListVO = clubService.getAllClub(clubSearchVO);
 		session.setAttribute("_SEARCH_", clubSearchVO);
 
@@ -101,10 +103,24 @@ public class ClubController {
 		view.addObject("pager", pager);
 		view.setViewName("club/list");
 		view.addObject("menuId", menuId);
+		System.out.println("검색");
 
 		return view;
 	}
 
+	@RequestMapping("/login")
+	public String login(HttpServletRequest request, HttpServletResponse response){
+		SessionUtil.set(request, "_USER_", "minwoohi");
+		return "redirect:/";
+	}
+	
+	@RequestMapping("/logout")
+	public String logout(HttpServletRequest request) {
+		SessionUtil.invalidate(request);
+		
+		return "redirect:/";
+	}
+	
 	// 조회수 증가
 	@Auth("USR")
 	@RequestMapping("/club/read/{menuId}/{id}")
@@ -218,7 +234,7 @@ public class ClubController {
 	@RequestMapping(value="club/delete/{articleId}", method=RequestMethod.GET)
 	public String doDelteArticleActionPage(@PathVariable String articleId){
 		if(clubService.removeOneClub(articleId)){
-			return "redirect:/club";
+			return "redirect:/";
 		}else {
 			return "redirect:/club/modify/{articleId}";
 		}
@@ -228,10 +244,8 @@ public class ClubController {
 	@RequestMapping(value="/club/deleteArticles/{menuId}", method=RequestMethod.POST)
 	public String doDeleteArticlesActionPage(@PathVariable String menuId, HttpServletRequest request){
 		String[] articleIdList = request.getParameterValues("deleteCheckedArticles");
-		logger.info("menuId:"+menuId);
 		
 		for(String articleId : articleIdList){
-			
 			clubService.removeOneClub(articleId);
 		}
 		

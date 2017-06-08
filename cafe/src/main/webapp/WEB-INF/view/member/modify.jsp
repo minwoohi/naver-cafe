@@ -59,23 +59,31 @@
 						data = JSON.parse(response);
 				if(data.isValidNumber){
 					$("#isValidNumber").val("v");
+					$("#isValidNumber").css("background-color", "#2cff19");
 				} else {
 					$("#isValidNumber").val("X");
+					$("#isValidNumber").css("background-color", "#f7162c");
 				}
 				if(data.isValidCharacter){
 					$("#isValidCharacter").val("v");
+					$("#isValidCharacter").css("background-color", "#2cff19");
 				} else {
 					$("#isValidCharacter").val("X");
+					$("#isValidCharacter").css("background-color", "#f7162c");
 				}
 				if(data.isValidSpecialCharacter){
 					$("#isValidSpecialCharacter").val("v");
+					$("#isValidSpecialCharacter").css("background-color", "#2cff19");
 				} else {
 					$("#isValidSpecialCharacter").val("X");
+					$("#isValidSpecialCharacter").css("background-color", "#f7162c");
 				}
 				if(data.isOverEight){
 					$("#isOverEight").val("v");
+					$("#isOverEight").css("background-color", "#2cff19");
 				} else {
 					$("#isOverEight").val("X");
+					$("#isOverEight").css("background-color", "#f7162c");
 				}
 				
 			});
@@ -92,10 +100,10 @@
 		<input type="password" name="memberPassword" id="password" placeholder="Password 입력하세요"/><br/>
 		<input type="text" name="nickName" id="nickName" value="${member.nickName }" />
 		<input type="button" value="modify" id="modifyBtn" /><br/><hr/>
-		숫자 포함 : <input type="text" id="isValidNumber" value="X" /><br/>
-		영대소문자 포함 : <input type="text" id="isValidCharacter" value="X" /><br/>
-		특수문자 포함 : <input type="text" id="isValidSpecialCharacter" value="X" /><br/>
-		8자 이상 : <input type="text" id="isOverEight" value="X" />
+		숫자 포함 : <input type="text" class="validCheck" id="isValidNumber" value="X" /><br/>
+		영대소문자 포함 : <input type="text" class="validCheck" id="isValidCharacter" value="X" /><br/>
+		특수문자 포함 : <input type="text" class="validCheck" id="isValidSpecialCharacter" value="X" /><br/>
+		8자 이상 : <input type="text" class="validCheck" id="isOverEight" value="X" />
 	</form:form>
 </body>
 </html>

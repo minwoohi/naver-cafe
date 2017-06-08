@@ -1,9 +1,6 @@
 package com.naver.cafe.member.service;
 
-import javax.servlet.http.HttpSession;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.servlet.http.HttpServletRequest;
 
 import com.naver.cafe.common.SHA256Util;
 import com.naver.cafe.member.biz.MemberBiz;
@@ -38,7 +35,7 @@ public class MemberServiceImpl implements MemberService {
 		return memberBiz.addOneMember(member);
 	}
 
-	@Override
+	/*@Override
 	public boolean login(HttpSession session, MemberVO member) {
 		
 		if (memberBiz.selectLockStatus(member.getMemberId()) > 0) {
@@ -63,14 +60,46 @@ public class MemberServiceImpl implements MemberService {
 		
 		if (memberBiz.getOneMember(member) != null) {
 			memberBiz.updateClearLockCount(member.getMemberId());
-			session.setAttribute("_MEMBER_",  member);
+			//session.setAttribute("_MEMBER_",  member);
+			return true;
+		} else {
+			memberBiz.plusLoginFailCount(memberId);
+			return false;
+		}
+	}*/
+
+	@Override
+	public boolean login(MemberVO member) {
+		
+		if (memberBiz.selectLockStatus(member.getMemberId()) > 0) {
+			return false;
+		}
+		
+		String memberId = member.getMemberId();
+		String salt = memberBiz.getSaltByMemberId(memberId);
+		
+		if(salt == null){ // 로그인 시도 가능하고 id 존재하지 않는 경우
+			return false;
+		}
+
+		// 로그인 시도 가능하고 id 존재하는 경우
+		memberBiz.updateClearLoginFailCount(member.getMemberId());
+		
+		String password = SHA256Util.getEncrypt(member.getMemberPassword(), salt);
+
+		member.setMemberPassword(password);
+
+		memberBiz.updateLockStatus(memberId);
+		
+		if (memberBiz.getOneMember(member) != null) {
+			memberBiz.updateClearLockCount(member.getMemberId());
+			//session.setAttribute("_MEMBER_",  member);
 			return true;
 		} else {
 			memberBiz.plusLoginFailCount(memberId);
 			return false;
 		}
 	}
-
 	@Override
 	public boolean modifyOneMember(MemberVO member) {
 		return memberBiz.mofidyOneMember(member);

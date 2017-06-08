@@ -29,17 +29,18 @@ div.cke_pagebreak{background:url("<c:url value="/static/js/ckeditor/plugins/page
 
 	$().ready(function(){
 		
+		
 		$("#commentBtn").click(function(){
 			
 			if (!$("#content").val()) {
-			    alert("내용을 입력하세요!");
-			    return;
+				alert("내용을 입력하세요!");
+				return;
 			}
 			
-			/* if (!$.trim($("#content").val())) {
-				alert("내용을 입력해주세요");
+			if(${sessionScope._MEMBER_ == null}){
+				alert("권한이 없습니다. 로그인을 해주세요!");
 				return;
-			} */
+			}
 			
 			$(this).parent().attr({
 				"method" : "post",
@@ -67,7 +68,6 @@ div.cke_pagebreak{background:url("<c:url value="/static/js/ckeditor/plugins/page
 				var parentReplyTag = $("<input type='hidden' name='parentReplyId' />");
 				parentReplyTag.attr("value", parentReplyId);
 				var memberId = $("<input type='hidden' name='memberId' value='${sessionScope._MEMBER_.memberId}' />");
-				//alert(memberId.attr('value'));
 				var articleId = $("<input type='hidden' name='articleId' value='${club.articleId }'/>");
 				var textarea = $("<textarea name='content' rows='5' cols='100'></textarea>");
 				var btn = $("<input type='button' class='replyWriteBtn' value='reply' style='color: red;'/>");
@@ -131,9 +131,7 @@ div.cke_pagebreak{background:url("<c:url value="/static/js/ckeditor/plugins/page
 	
 	$(document).on('click', '.editReplyBtn', function(){
 		var cont = $(this).closest(".replyForm").find(".content").val();
-		//var cont = $(this).closest(".replyForm").find(".editReply").val();
-		//alert("cont : " + cont);
-		
+				
 		if(!cont){
 			alert("댓글을 입력하세요!");
 			return;
@@ -221,9 +219,9 @@ div.cke_pagebreak{background:url("<c:url value="/static/js/ckeditor/plugins/page
 		</c:if>
 	</div>
 	
-	<div style="display:none;">
+	<%-- <div style="display:none;">
 		<c:import url="http://localhost:3000"/>
-	</div>
+	</div> --%>
 	
 </body>
 </html>

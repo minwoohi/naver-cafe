@@ -11,6 +11,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.naver.cafe.common.Auth;
+import com.naver.cafe.common.SessionUtil;
 import com.naver.cafe.menu.biz.MenuBiz;
 import com.naver.cafe.menu.vo.MenuSearchVO;
 import com.naver.cafe.menu.vo.MenuVO;
@@ -19,6 +20,7 @@ import com.naver.cafe.menu.vo.MenuVO;
 public class AuthInterceptor extends HandlerInterceptorAdapter {
 
 	private MenuBiz menuBiz;
+	private Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
 
 	public void setMenuBiz(MenuBiz menuBiz) {
 		this.menuBiz = menuBiz;
@@ -28,7 +30,11 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		// Controller 수행 여부 반환
-
+		// 클러스터링 확인
+		// SessionUtil.set(request, response, "_USER_", "사용자 정보");
+		
+		String user = (String) SessionUtil.get(request, "_USER_");
+		
 		HandlerMethod controller = null;
 		if (handler instanceof HandlerMethod) {
 
@@ -40,7 +46,6 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
 				String authValue = auth.value();
 				String myAuth = "ADM";
-
 				if (myAuth.equals("ADM")) {
 					return true;
 				}

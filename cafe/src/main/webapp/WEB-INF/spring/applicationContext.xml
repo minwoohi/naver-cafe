@@ -2,11 +2,31 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 	
 	<mvc:annotation-driven/>
 	
+	<!-- 스프링, ehCache 연동 스프링에서 ehCache 공식지원함. eacache 파일 읽어서 관리하도록 함-->
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="cacheManager">
+            <bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+                <property name="configLocation" value="classpath:ehcache.xml" />
+                <property name="shared" value="true" />
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="ehcacheUtil" class="com.naver.cafe.common.EhCacheUtil">
+    	<constructor-arg name="ehCacheCacheManager"  ref="cacheManager"/>
+    	<constructor-arg name="cacheName" value="storedEmp"/>
+    </bean>
+    
+    <bean id="ehcacheHelper" class="com.naver.cafe.common.EhCacheHelper">
+    	<property name="ehcacheUtil" ref="ehcacheUtil" />
+    </bean>
 	<!-- 
 		"http://localhost:8080/setting/static/js/파일명" 요청에 대해
 		"/WEB-INF/resources/js/파일명"으로 응답 주겠다.
@@ -46,10 +66,14 @@
 	<bean id="memberController"
 			class="com.naver.cafe.member.web.MemberController">
 			<property name="memberService" ref="memberServiceImpl" />
+			<property name="googleConnectionFactory" ref="googleConnectionFactory" />
+			<property name="googleOAuth2Parameters" ref="googleOAuth2Parameters" />
 	</bean>
 	
 	<bean id="replyController"
 			class="com.naver.cafe.reply.web.ReplyController">
 			<property name="replyService" ref="replyServiceImpl" />
 	</bean>
+	
+	
 </beans>

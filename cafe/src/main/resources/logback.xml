@@ -9,10 +9,10 @@
 	</appender>
 	
 	<!-- 패키지 안에 있는 것들 org.springframework 패키지로 시작하는 것은 console에 INFO로 찍겠다. -->
-	<logger name="org.springframework" level="INFO" />
+	<logger name="org.springframework" level="WARN" />
 	
 	<!-- console로 이름을 가진 appender를 info 레벨로 찍겠다. -->
-	<root level="INFO">
+	<root level="WARN">
 		<appender-ref ref="console" />
 	</root>
 </configuration>

@@ -6,7 +6,14 @@ public class MemberVO {
 	private String memberPassword;
 	private String auth;
 	private String salt;
+	private String joinDate;
 	
+	public String getJoinDate() {
+		return joinDate;
+	}
+	public void setJoinDate(String joinDate) {
+		this.joinDate = joinDate;
+	}
 	public String getMemberId() {
 		return memberId;
 	}

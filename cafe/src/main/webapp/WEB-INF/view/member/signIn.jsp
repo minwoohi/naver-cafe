@@ -29,14 +29,10 @@
 			
 			// form을 json 형태로 전송
 			$.post("<c:url value="/member/signIn" />", $("#signInForm").serialize(), function(response) {
-				alert("signIn 요청");
 				// 세션 정보 있는 response 를 받은 후 부모창 새로고침
 				opener.location.reload();
 				window.close();
 			});
-			
-			//opener.location.reload();
-			//window.close();
 		});
 		
 	});
@@ -46,5 +42,6 @@
 		<input type="password" name="memberPassword" id="memberPassword" placeholder="Password 입력하세요" /><br/>
 		<input type="button" id="signInBtn" value="sign in" />
 	</form:form>
+	<a href="<c:url value="/member/googleSignIn"/>"><img src="<c:url value="/static/img/googleLogin.PNG"/>" height="50px" width="180px"></a>
 </body>
 </html>

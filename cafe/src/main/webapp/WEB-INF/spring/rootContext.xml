@@ -14,7 +14,7 @@
 	<bean id="dataSource"
 			class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="net.sf.log4jdbc.DriverSpy" />
-		<property name="url" value="jdbc:log4jdbc:oracle:thin:@localhost:1521:XE" />
+		<property name="url" value="jdbc:log4jdbc:oracle:thin:@192.168.201.24:1521:XE" />
 		<property name="username" value="BOARD_2" />
 		<property name="password" value="1234" />
 	</bean>
@@ -71,11 +71,12 @@
 	<aop:config>
 		<!-- 접근지정자, 리턴타입, 패키지 (.* : 하위 모든 패키지) -->
 		<!-- com.blog.naver.하위 패키지.하위패키지의 ServiceImpl로 끝나는 모든 클래스의 모든 메소드 -->
-		<aop:pointcut id="transactionScope" expression="execution(public * com.naver.cafe..*.*ServiceImpl.*(..))" />
-		
+		<aop:pointcut id="transactionScope" expression="execution(public * com.naver.cafe..*.*ServiceImpl.*(..))" />		
 		<aop:advisor advice-ref="transactionAdvice" pointcut-ref="transactionScope"/>
 		
 	</aop:config>
+	
+	
 	
 	<!-- Connection을 관리하는 객체. dataSource 세터도 있기 때문에 daoImpl에서 private 멤버 가질 필요 없다. -->
 	<bean id="sqlSessionFactory"
