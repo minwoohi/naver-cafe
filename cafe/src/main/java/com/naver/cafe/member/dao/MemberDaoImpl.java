@@ -16,8 +16,6 @@ public class MemberDaoImpl extends SqlSessionDaoSupport implements MemberDao {
 		return getSqlSession().selectOne(NS + ".selectLockStatus", memberId);
 	}
 
-
-
 	@Override
 	public int plusLoginFailCount(String memberId) {
 		return getSqlSession().update(NS + ".plusLoginFailCount", memberId);

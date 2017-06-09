@@ -74,6 +74,5 @@
 			class="com.naver.cafe.reply.web.ReplyController">
 			<property name="replyService" ref="replyServiceImpl" />
 	</bean>
-	
-	
+
 </beans>

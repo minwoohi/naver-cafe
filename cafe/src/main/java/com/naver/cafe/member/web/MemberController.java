@@ -27,6 +27,7 @@ import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
@@ -43,7 +44,6 @@ public class MemberController {
 	private Logger logger = LoggerFactory.getLogger(ClubController.class);
 	
 	private GoogleConnectionFactory googleConnectionFactory;
-	
 	private OAuth2Parameters googleOAuth2Parameters;
 	
 	public void setGoogleConnectionFactory(GoogleConnectionFactory googleConnectionFactory) {
@@ -99,22 +99,35 @@ public class MemberController {
 		return "/member/signIn";
 	}
 
-	@RequestMapping(value = "/member/googleSignIn", method = RequestMethod.GET)
-	public String doGoogleSignInActionPage() {
+	@RequestMapping(value = "/member/googleSignIn", method = RequestMethod.POST)
+	public void doGoogleSignInActionPage(HttpServletResponse response) {
 		OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
 		String url = oauthOperations.buildAuthorizeUrl(GrantType.AUTHORIZATION_CODE, googleOAuth2Parameters);
-
-		return "redirect:" + url;
+		System.out.println("/member/googleSignIn, url : " + url);
+		
+		PrintWriter out;
+		try {
+			out = response.getWriter();
+			out.write(url);
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+		
 	}
 	
 	@RequestMapping("/member/googleSignInCallback")
 	public String doSessionAssignActionPage(HttpServletRequest request){
 		System.out.println("/member/googleSignInCallback");
 		String code = request.getParameter("code");
+		System.out.println("code : " + code);
 		
 		OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
+		
 		AccessGrant accessGrant = oauthOperations.exchangeForAccess(code , googleOAuth2Parameters.getRedirectUri(),
 				null);
+		
 		String accessToken = accessGrant.getAccessToken();
 		Long expireTime = accessGrant.getExpireTime();
 		if (expireTime != null && expireTime < System.currentTimeMillis()) {
@@ -123,9 +136,19 @@ public class MemberController {
 		}
 		Connection<Google> connection = googleConnectionFactory.createConnection(accessGrant);
 		Google google = connection == null ? new GoogleTemplate(accessToken) : connection.getApi();
+		
 		PlusOperations plusOperations = google.plusOperations();
 		Person person = plusOperations.getGoogleProfile();
+		
+		MemberVO member = new MemberVO();
+		member.setNickName(person.getDisplayName());
+		member.setAuth("USR");
 
+		HttpSession session = request.getSession();
+		session.setAttribute("_MEMBER_", member );
+		
+		System.out.println(person.getDisplayName());
+		
 		/*System.out.println(person.getAccountEmail());
 		System.out.println(person.getAboutMe());
 		System.out.println(person.getDisplayName());
@@ -164,13 +187,12 @@ public class MemberController {
 		}
 	}
 
-	@RequestMapping(value = "/member/signOut")
-	public String logout(HttpServletRequest request) {
-		// session.invalidate();
+	@RequestMapping("/member/signOut")
+	public String logout(HttpServletRequest request, HttpServletResponse response) {
 		SessionUtil.invalidate(request);
 		return "redirect:/";
 	}
-
+	
 	@RequestMapping(value = "/member/checkDuplicatedMemberId", method = RequestMethod.POST)
 	public void checkDuplicatedMemberId(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String memberId = request.getParameter("memberId");

@@ -52,5 +52,5 @@
 <c:if test="${depth > 0 }">
 	<c:forEach var="i" begin="0" end="${depth - 1 }" step="1">
 		</ul>
-	</c:forEach> 
+	</c:forEach>
 </c:if>

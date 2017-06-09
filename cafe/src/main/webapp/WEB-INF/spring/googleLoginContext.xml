@@ -12,5 +12,4 @@
 		<property name="scope" value="https://www.googleapis.com/auth/plus.login"/> <!-- <property name="scope" value="https://www.googleapis.com/auth/plus.me"/> -->
 		<property name="redirectUri" value="http://localhost:8080/cafe/member/googleSignInCallback"/> 
 	</bean>
-
 </beans>
